@@ -1,0 +1,95 @@
+  /* Skills Reqs */
+
+  .bg-circle {
+    stroke: #999;
+    fill-opacity: 0.05;
+    stroke-dasharray: 0.1em;
+    stroke-width: 0.05em;
+    fill: #eee;
+}
+.skill-arc {
+    fill-opacity: 0.8;
+    stroke: #666;
+}
+.skill-label {
+    text-anchor: middle;
+    font-size: 0.8rem;
+    z-index: 300;
+    fill: #666;
+		/*dy: 0.5em; */
+}
+.skill-separator {
+  stroke: #999;
+}
+.arc-tooltip {
+  font-family: Helvetica, Arial, sans-serif;
+  background: rgba(70,80,100,.7);
+  border-radius: .1rem;
+  color: #fff;
+  display: block;
+  font-size: 0.7em;
+  padding: .2rem .4rem;
+  position: absolute;
+  text-overflow: ellipsis;
+  white-space: pre;
+  z-index: 300;
+  visibility: hidden;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+  }
+  .svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+  }
+
+  
+
+  /* Carousel */
+  .scene {
+    border: 1px solid #CCC;
+    margin: 40px 0;
+    position: relative;
+    margin: 10px auto;
+    perspective: 600px;
+  }
+  
+  .carouselTeam {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: transform 1s;
+    cursor: pointer;
+  }
+  
+  .carouselTeam-cell {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    border: 2px solid #333;
+    box-sizing: content-box;
+    font-size: 12pt;
+    font-weight: bold;
+    color: #369;
+    opacity: 0.9;
+    text-align: center;
+    transition: transform 1s, opacity 1s;
+  }
+  
+  .clip-circle {
+    width: 60px;
+    margin:px;
+    position: relative;
+    left: 0px;
+    top: -130px;
+    clip-path: circle(30px at center);
+  }
