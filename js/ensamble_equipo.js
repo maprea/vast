@@ -222,11 +222,13 @@ teamCoverage = function(team, failures) {
     return {
         'coverage': skillsDiff.find( x => x < 0) ? false : true,    // True si hay algun valor negativo
         'overallocation': d3.sum(skillsDiff),
-        'missing_skills': skillsDiff.filter(x => x < 0).map( function(x) {
-          const skill = teamMaxSkills[skillsDiff.indexOf(x)];
-          skill.req_value = skillsReqs.find(sr => sr.skill == skill.name).value
-          return skill;
-        }),
+        'missing_skills': skillsDiff.map( function(v, i) {
+          if (v < 0) {
+            const skill = teamMaxSkills[i];
+            skill.req_value = skillsReqs.find(sr => sr.skill == skill.name).value
+            return skill;
+          }
+        }).filter(x => x),
         'diff_values': skillsDiff
     };
 }
@@ -688,7 +690,6 @@ updateCoverageNotification = function(groupSkills) {
     const globalPerc = Math.round(1.0 * (tc.diff_values.length - tc.missing_skills.length) / tc.diff_values.length * 100);
     var html = '';
     tc.missing_skills.forEach( function(d) {
-        console.log(d);
         const skillPerc = Math.round(1.0 * d.max_value / d.req_value * 100);
         html += `<h4 class="small font-weight-bold">${d.name}<span class="float-right">${skillPerc} %</span></h4>
                 <div class="progress mb-4">
