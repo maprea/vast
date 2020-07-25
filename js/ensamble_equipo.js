@@ -1,5 +1,5 @@
 // Vars globales
-var selectedFailures = ['Failure 3', 'Failure 12'];
+var selectedFailures = ['Failure 1', 'Failure 3', 'Failure 4', 'Failure 12'];
 const sizeSkillReqs = { width: 750, height: 400};
 const margin = { top: 30, bottom: 30, left: 20, right: 20 };
 var failuresSkills, peopleSkills, failuresPeople;
@@ -27,6 +27,10 @@ $(document).ready(function() {
         updateSelectedFailures();
     });
 
+    // Activa tooltips
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
   });
 
 
@@ -95,18 +99,21 @@ Promise.all([
 
 // Actualiza fallas seleccionadas/detectadas
 updateSelectedFailures = function() {
-    var selectedDivs = '';
+    var selectedDivs = '<b class="p-2">Fallas detectadas</b><ul>';
     selectedFailures.forEach(function(f) {
         // Selecciona las fallas en el form de la modal
         $(`#selected-failures option[value="${f}"]`).attr('selected','selected');
 
         // Agrega las fallas en el box de seleccionadas
-        selectedDivs += `<div class="p-1 m-1 d-inline-block bg-info">${f}</div> `;
+        selectedDivs += `<li>${f}</li> `;
     });
-    $('.failure-selection').html(selectedDivs);
+    $('#detected-failures-count').attr('title', selectedDivs + '</ul>');
+    $('#detected-failures-count').tooltip('dispose');
+    $('#detected-failures-count').tooltip();
+
 
     // Contador de fallas detectadas
-    $('#detected-failures-count').html(selectedFailures.length);
+    $('#detected-failures-count span').html(selectedFailures.length);
 
     // Dibuja skills reqs
     drawSkillReqs();
@@ -479,12 +486,13 @@ drawTeamSkills = function(groupSkills) {
       }
     };
     
-    d3.select('#skills-team-canvas').select('div').remove();
-    const div = d3.select('#skills-team-canvas').append('div');
-    
-    //= DOM.element('div');
+    // Dibuja el chart con plotly
     Plotly.newPlot('skills-team-canvas', chartData(groupSkills), layout, {displayModeBar: false});
-    
+
+    document.getElementById('skills-team-canvas').on('plotly_afterplot', function(){
+      clearCarouselSelection();
+    });
+
     // TODO: Coloreo de skill labels segun cobertura
     //d3.selectAll('.angularaxistick').selectAll('text').style('fill','red');
 }
@@ -523,7 +531,7 @@ chartData = function(groupSkills) {
   
 drawCarousel = function(groupSkills)  {
     // Tamaño de escena (recuadro frontal visible del carousel)
-    const sceneSize = 240;
+    const sceneSize = 300;
     
     // Creacion de la div de escena
     d3.select('#team-carousel-area').select('div').remove();
@@ -591,8 +599,14 @@ drawCarousel = function(groupSkills)  {
       
       // Seleccion de persona (para resaltar en el polar chart)
       .on("click", function() {
-          d3.select(this).call(togglePersonSelection);
-        });
+        // Se verifica si hay selecciones en el radar plotly. Si es asi, se redibuja para evitar problemas de mapeo entre los charts
+        const peopleRadar = d3.select('#skills-team-canvas').select('g.scatterlayer').selectAll('g.trace').size();
+        const teamSize = groupSkills.length;
+        if (peopleRadar != teamSize) {
+          drawTeamSkills(groupSkills);
+        }
+        d3.select(this).call(togglePersonSelection);
+      });
 }
 
 carouselData = function(groupSkills, sceneSize) {
@@ -656,15 +670,15 @@ togglePersonSelection = function(carouselCell) {
   
     // Valores de estilo para personas seleccionadas
     var opacity = 1;
-    var border = '#c44';
-    
-    if (d3.select('.scatterlayer').selectAll(`.trace:nth-child(${idx + 1})`).style('opacity') == 1) {
+    var cellSelected = true;
+
+    if (carouselCell.classed('carousel-cell-selected')) {
       // Estilos para personas no seleccionadas
       opacity = 0.5;
-      border = '#333';
+      cellSelected = false;
     }
     // Setea los estilos en la celda y polar chart
-    carouselCell.style('border-color', border);
+    carouselCell.classed('carousel-cell-selected', cellSelected);
     d3.select('.scatterlayer').selectAll(`.trace:nth-child(${idx + 1})`).style('opacity', opacity);
 }
 
@@ -702,4 +716,12 @@ updateCoverageNotification = function(groupSkills) {
     </div>`;
 
     d3.select('#cobertura-skills-card').html(html);
+}
+
+clearCarouselSelection = function() {
+  d3.select('.carouselTeam')
+  .selectAll('.carouselTeam-cell')
+  .classed('carousel-cell-selected', function(d){
+    return (d3.select('.scatterlayer').selectAll(`.trace:nth-child(${d.cellIndex + 1})`).style('opacity') == 1);
+  });
 }

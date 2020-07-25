@@ -224,10 +224,14 @@
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                       <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Fallas detectadas</div>
-                      <div class="h5 mb-0 font-weight-bold text-grey-800 my-4" id="detected-failures-count"></div>
+                      <div class="h5 mb-0 font-weight-bold text-grey-800 my-4" id="detected-failures-count" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Fallas detectadas</b>">
+                        <i class="fas fa-burn fa-2x text-gray-300 mr-3"></i><span></span></div>
+                    </div>
+                    <div class="col-auto mr-3">
+                      <button data-toggle="modal" data-target="#edit-failures-modal" type="button" class="btn btn-info"><i class="fas fa-clipboard-list text-gray-300"></i> Editar Fallas</button>
                     </div>
                     <div class="col-auto">
-                      <i class="fas fa-burn fa-2x text-gray-300"></i>
+                      
                     </div>
                   </div>
                 </div>
@@ -258,19 +262,18 @@
               </div>
             </div>
 
-            <!-- Custom fallas -->
-            <div class="col-xl-6 col-md-12 mb-8">
-              <div class="card border-left-info shadow h-200 py-2">
+            <!-- Cobertura de skills -->
+            <div class="col-xl-6 col-md-12 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
+                  <div class="row no-gutters align-items-center mb-2">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-2">Cobertura de Skills</div>
+                    </div>
+                  </div>
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Personalizar fallas detectadas</div>
-                      <div class="row no-gutters align-items-center">
-                        <div class="failure-selection text-white align-items-start"></div>
-                      </div>
-                    </div>
-                    <div class="col-auto">
-                      <button data-toggle="modal" data-target="#edit-failures-modal" type="button" class="btn btn-info"><i class="fas fa-clipboard-list text-gray-300"></i> Editar Fallas</button>
+                      <div class="align-items-start" id="cobertura-skills-card"></div>
                     </div>
                   </div>
                 </div>
@@ -315,41 +318,7 @@
           <!-- Content Row -->
           <div class="row">
 
-            <!-- Content Column -->
-            <div class="col-lg-6 mb-4">
-
-              <!-- Cobertura de skills -->
-              <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Cobertura de Skills</h6>
-                </div>
-                <div class="card-body" id="cobertura-skills-card">
-                  <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Sales Tracking <span class="float-right">40%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Customer Database <span class="float-right">60%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Payout Details <span class="float-right">80%</span></h4>
-                  <div class="progress mb-4">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <h4 class="small font-weight-bold">Account Setup <span class="float-right">Complete!</span></h4>
-                  <div class="progress">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="col-lg-6 mb-4">
+            <div class="col mb-4">
 
               <!-- Equipo recomendado -->
               <div class="card shadow mb-4">

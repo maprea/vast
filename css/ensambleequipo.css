@@ -51,7 +51,7 @@
     left: 0;
   }
 
-  
+
 
   /* Carousel */
   .scene {
@@ -92,4 +92,12 @@
     left: 0px;
     top: -130px;
     clip-path: circle(30px at center);
+  }
+
+  .carousel-cell-selected {
+      border-color: #c44;
+  }
+
+  #detected-failures-count span{
+      font-size: 1.25em;
   }
