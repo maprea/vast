@@ -1,11 +1,12 @@
 // Vars globales
-var selectedFailures = ['Failure 1', 'Failure 3', 'Failure 4', 'Failure 12'];
+var selectedFailures = ["0", "3", "5"];
 const sizeSkillReqs = { width: 750, height: 400};
 const margin = { top: 30, bottom: 30, left: 20, right: 20 };
-var failuresSkills, peopleSkills, failuresPeople;
+var failuresSkills, peopleSkills, failuresPeople, peopleDetail;
 var teamSize = 0;
 const carouselClass = "carouselTeam";
 const carouselCellClass = "carouselTeam-cell";
+var failures;
 
 $(document).ready(function() {
 
@@ -23,6 +24,7 @@ $(document).ready(function() {
     // Evento guardar fallas seleccionadas
     $('#edit-failures-submit').on('click', function(d) {
         selectedFailures = $('#selected-failures').val();
+        console.log(selectedFailures);
         $('#edit-failures-modal').modal('hide');
         updateSelectedFailures();
     });
@@ -33,13 +35,26 @@ $(document).ready(function() {
     })
   });
 
-
+// Map de fallas
+mapFailure = function(id) {
+  const map = {
+    '0': 'DDoS',
+    '1': 'Nodo caído',
+    '2': 'Backbone saturado',
+    '3': 'Conexión degradada',
+    '4': 'Ataque Man-in-the-middle',
+    '5': 'Interrupción de energía',
+    '6': 'Pérdida de información'
+  }
+  return map[id];
+}
 
 // Carga de datos
 Promise.all([
-    d3.csv("data/personas_skills_wide.csv"), 
-    d3.csv("data/failure_persona_score.csv"),
-    d3.csv("data/problemas_skills.csv")
+    d3.csv("data/people_skills.csv"), 
+    d3.csv("data/scores_failures.csv"),
+    d3.csv("data/failures_skills.csv"),
+    d3.csv("data/people_details.csv")
 ]).then( function (data) {
     // Skills de las personas
     peopleSkills = data[0].map( function(d) {
@@ -80,8 +95,19 @@ Promise.all([
         }
     });
 
+    // People details
+    peopleDetail = data[3].map( function(d) {
+      return {
+      'name': d.Name,
+      'mail': d.Mail,
+      'photo': d.Photo,
+      'menciones': d.Menciones,
+      'popindex': d.Popularity_index2
+      }
+  });
+
     // Fallas
-    const failures = failuresSkills.map( d => d.failure );
+    failures = failuresSkills.map( d => d.failure );
 
     // Failures form (modal)
     var formFailures = ' \
@@ -89,7 +115,7 @@ Promise.all([
         <select multiple class="form-control" id="selected-failures"> \
     ';
     failures.forEach(function(f) {
-        formFailures += `<option value="${f}">${f}</option>`
+        formFailures += `<option value="${f}">${mapFailure(f)}</option>`
     });
     $('#edit-failures-modal .modal-body .form-group').html(formFailures + '</select>');
 
@@ -100,12 +126,16 @@ Promise.all([
 // Actualiza fallas seleccionadas/detectadas
 updateSelectedFailures = function() {
     var selectedDivs = '<b class="p-2">Fallas detectadas</b><ul>';
-    selectedFailures.forEach(function(f) {
+    failures.forEach(function(f) {
+      if (selectedFailures.indexOf(f) != -1) {
         // Selecciona las fallas en el form de la modal
         $(`#selected-failures option[value="${f}"]`).attr('selected','selected');
 
         // Agrega las fallas en el box de seleccionadas
-        selectedDivs += `<li>${f}</li> `;
+        selectedDivs += `<li class="text-left">${mapFailure(f)}</li> `;
+      } else {
+        $(`#selected-failures option[value="${f}"]`).removeAttr("selected");
+      }
     });
     $('#detected-failures-count').attr('title', selectedDivs + '</ul>');
     $('#detected-failures-count').tooltip('dispose');
@@ -336,9 +366,9 @@ drawSkillsReqs = function(svg, skillRepr, size, failures, center) {
     skillReqsGroup.selectAll('path')
       .data(arcData)
       .transition()
-      .duration(750)
+      .duration(1500)
       .ease(d3.easeCubicOut)
-      .delay(100)
+      .delay(250)
       .attr('fill', d => d.fillColor)
       .attrTween( 'd', function(data) {       // Funcion custom para generar arcos cada vez mas grandes
       // Interpolador de radio
@@ -465,8 +495,10 @@ addArcTooltip = function(svg) {
 drawTeamSkills = function(groupSkills) {
     // Config del layout del polar chart
     const layout = {
-      width: sizeSkillReqs.width,
-      height: (sizeSkillReqs.width / 3) * 2,
+      //width: sizeSkillReqs.width,
+      //height: (sizeSkillReqs.width / 3) * 2,
+      width: '100%',
+      height: '100%',
       polar: {
         angularaxis: {
           linewidth: 1,
@@ -487,7 +519,7 @@ drawTeamSkills = function(groupSkills) {
     };
     
     // Dibuja el chart con plotly
-    Plotly.newPlot('skills-team-canvas', chartData(groupSkills), layout, {displayModeBar: false});
+    Plotly.newPlot('skills-team-canvas', chartData(groupSkills), layout, {displayModeBar: false, responsive: true});
 
     document.getElementById('skills-team-canvas').on('plotly_afterplot', function(){
       clearCarouselSelection();
@@ -531,7 +563,7 @@ chartData = function(groupSkills) {
   
 drawCarousel = function(groupSkills)  {
     // Tamaño de escena (recuadro frontal visible del carousel)
-    const sceneSize = 300;
+    const sceneSize = 350;
     
     // Creacion de la div de escena
     d3.select('#team-carousel-area').select('div').remove();
@@ -684,15 +716,23 @@ togglePersonSelection = function(carouselCell) {
 
 htmlPersonCell = function(personData) {
     // Genera el html para la persona (falta convertir a d3)
+    const detail = peopleDetail.find(d => d.name == personData.nombre);
     return `
-    <svg width="${personData.cellWidth}" height="${personData.cellHeight}">
+    <svg class="person-card" width="${personData.cellWidth}" height="${personData.cellHeight}">
      <g>
       <rect x="0" y="0" width="${personData.cellWidth}" height="${personData.cellHeight}" fill="rgb(245,245,245)" />
-      <text x="50%" y="15%" dominant-baseline="middle" text-anchor="middle" font-family="Verdana" font-size="30" fill="grey">${personData.nombre}</text>
-      <text x="50%" y="30%" dominant-baseline="middle" text-anchor="middle" font-family="Verdana" font-size="15" fill="grey">${personData.nombre}@gmail.com</text>
-      <text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle" font-family="Verdana" font-size="16" fill="grey">Popularity Index</text>
-      <text x="50%" y="93%" dominant-baseline="middle" text-anchor="middle" font-family="Verdana" font-size="20" fill="green">${personData.max_score}</text>
-      <img src="https://bit.ly/2ZosJEA" class="clip-circle">
+      <rect  x="4%" y="75%" width="23%" height="23%" class="scorebox" />
+      <rect  x="28%" y="75%" width="41%" height="23%" class="scorebox"/>
+      <rect  x="70%" y="75%" width="27%" height="23%"  class="scorebox"/>
+      <text x="50%" y="15%" class="nombre">${detail.name}</text>
+      <text x="50%" y="30%" class="mail">${detail.mail}</text>
+      <text x="15%" y="80%" class="label" >Score</text>
+      <text x="15%" y="93%" class="score">${personData.max_score}</text>
+      <text x="49%" y="80%" class="label" >Popularity Index</text>
+      <text x="49%" y="93%" class="popindex">${detail.popindex}</text>
+      <text x="83%" y="80%" class="label" >Menciones</text>
+      <text x="83%" y="93%" class="score">${detail.menciones}</text>
+      <img src="${detail.photo}" class="clip-circle">
     </g>
   </svg>`
   }

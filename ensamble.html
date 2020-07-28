@@ -217,20 +217,124 @@
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Estado de la Red y Fallas detectadas</h1>
+            <h1 class="h3 mb-0 text-gray-800">Ensamble de equipo</h1>
             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Generar Reporte</a>
           </div>
 
           <!-- Content Row -->
           <div class="row">
 
-            <iframe class="col-xs-12 mb-4 iframe-fallas" frameborder="0" src="https://mc15.github.io/uba-infoviz-2020-vast-mini-challenge-3/"></iframe>
-            <!-- <div class="col-xs-12 mb-4">
-              <div class="embed-responsive embed-responsive-1by1 iframe-container">
-                <iframe class="embed-responsive-item" frameborder="0" src="https://mc15.github.io/uba-infoviz-2020-vast-mini-challenge-3/"></iframe>
+            <!-- Fallas detectadas -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Fallas detectadas</div>
+                      <div class="h5 mb-0 font-weight-bold text-grey-800 my-4" id="detected-failures-count" data-toggle="tooltip" data-html="true" data-placement="bottom" title="<b>Fallas detectadas</b>">
+                        <i class="fas fa-burn fa-2x text-gray-300 mr-3"></i><span></span></div>
+                    </div>
+                    <div class="col-auto mr-3">
+                      <button data-toggle="modal" data-target="#edit-failures-modal" type="button" class="btn btn-info"><i class="fas fa-clipboard-list text-gray-300"></i> Editar Fallas</button>
+                    </div>
+                    <div class="col-auto">
+                      
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>-->
+            </div>
 
+            <!-- Cobertura de fallas -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Cantidad de miembros del equipo</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <div class="d-flex justify-content-center my-4">
+                          <div class="w-75">
+                            <input type="range" class="custom-range" id="teamSlider" min="2" max="10">
+                          </div>
+                          <span class="font-weight-bold text-primary ml-2" id="teamSizeSpan"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cobertura de skills -->
+            <div class="col-xl-6 col-md-12 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center mb-2">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-2">Cobertura de Skills</div>
+                    </div>
+                  </div>
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="align-items-start" id="cobertura-skills-card"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- Skills Reqs Chart -->
+            <div class="col-xl-6 col-lg-6">
+              <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Skills requeridos según las fallas seleccionadas</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area pt-4" id="skills-reqs-canvas"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Skills Equipo Chart -->
+            <div class="col-xl-6 col-lg-6">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">Skills cubiertos por el equipo</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                  <div class="chart-area" id="skills-team-canvas"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <div class="col mb-4">
+
+              <!-- Equipo recomendado -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Equipo conformado</h6>
+                </div>
+                <div class="card-body" id="team-carousel-area"></div>
+              </div>
+            </div>
 
           </div>
 
@@ -261,6 +365,31 @@
     <i class="fas fa-angle-up"></i>
   </a>
 
+<!-- Modal Failures -->
+<div class="modal fade" id="edit-failures-modal" tabindex="-1" role="dialog" aria-labelledby="edit-failures-modal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Personalizar fallas detectadas</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="button" id="edit-failures-submit" class="btn btn-primary">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -270,6 +399,13 @@
 
   <!-- Custom scripts for all pages-->
   <script src="js/sb-admin-2.min.js"></script>
+
+  <!-- Page level plugins -->
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="js/ensamble_equipo.js"></script>
 
 </body>
 

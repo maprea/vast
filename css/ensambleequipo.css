@@ -1,11 +1,11 @@
   /* Skills Reqs */
 
-  .bg-circle {
+.bg-circle {
     stroke: #999;
-    fill-opacity: 0.05;
+    fill-opacity: 0.1;
     stroke-dasharray: 0.1em;
     stroke-width: 0.05em;
-    fill: #eee;
+    fill: #ccc;
 }
 .skill-arc {
     fill-opacity: 0.8;
@@ -21,6 +21,7 @@
 .skill-separator {
   stroke: #999;
 }
+
 .arc-tooltip {
   font-family: Helvetica, Arial, sans-serif;
   background: rgba(70,80,100,.7);
@@ -44,14 +45,18 @@
     vertical-align: top;
     overflow: hidden;
   }
+
   .svg-content-responsive {
     display: inline-block;
     position: absolute;
     top: 10px;
     left: 0;
-  }
+}
 
-
+.chart-area {
+    max-width: 100%;
+    margin: auto;
+}
 
   /* Carousel */
   .scene {
@@ -59,7 +64,7 @@
     margin: 40px 0;
     position: relative;
     margin: 10px auto;
-    perspective: 600px;
+    perspective: 1000px;
   }
   
   .carouselTeam {
@@ -86,12 +91,12 @@
   }
   
   .clip-circle {
-    width: 60px;
-    margin:px;
+    width: 100px;
+    margin: 0px;
     position: relative;
     left: 0px;
-    top: -130px;
-    clip-path: circle(30px at center);
+    top: -200px;
+    clip-path: circle(50px at center);
   }
 
   .carousel-cell-selected {
@@ -101,3 +106,52 @@
   #detected-failures-count span{
       font-size: 1.25em;
   }
+
+  .person-card text {
+    dominant-baseline: middle;
+    text-anchor: middle;
+    font-size: 1em;
+    fill: #369;
+  }
+  .person-card text.nombre {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  .person-card text.label {
+    fill: #699;
+  }
+  .person-card text.popindex {
+    fill: #393;
+    font-size: 1.5em;
+  }
+  .person-card text.score {
+    font-size: 1.2em;
+    fill: #366;
+  }
+  .person-card rect.scorebox {
+      fill: #daeaea;
+      stroke: #369;
+      opacity: 0.25;
+  }
+
+
+.iframe-fallas {
+    width: 100%;
+    height: 2800px;
+    position: relative;
+    border: none;
+}
+.iframe-container {
+    overflow:hidden;
+    padding-bottom:56.25%;
+    position:relative;
+    height:0;
+}
+.iframe-container iframe{
+    left:0;
+    top:0;
+    height:100%;
+    width:100%;
+    position:absolute;
+    border: 0;
+}
