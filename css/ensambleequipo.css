@@ -100,8 +100,12 @@
   }
 
   .carousel-cell-selected {
-      border-color: #c44;
+      border-color: #666;
   }
+  .carousel-cell-selected rect {
+    fill: #ddd;
+    opacity: 0.85;
+}
 
   #detected-failures-count span{
       font-size: 1.25em;
